@@ -44,8 +44,11 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.aramalr.messages.R
 import com.aramalr.messages.sms.Message
+import com.aramalr.messages.sms.SmsAddress
 import com.aramalr.messages.ui.components.AramalrTopBar
+import com.aramalr.messages.ui.components.MyOsCard
 
 @Composable
 fun ThreadScreen(
@@ -57,6 +60,9 @@ fun ThreadScreen(
     var draft by remember { mutableStateOf("") }
     val listState = rememberLazyListState()
     val context = LocalContext.current
+    val address = messages.firstOrNull()?.address.orEmpty()
+    val title = address.ifBlank { "Sohbet" }
+    val acceptsReplies = SmsAddress.acceptsReplies(address)
     val canSend = draft.trim().isNotEmpty()
 
     LaunchedEffect(messages.size) {
@@ -75,7 +81,7 @@ fun ThreadScreen(
                 .imePadding(),
     ) {
         AramalrTopBar(
-            title = viewModel.addressOrFallback(),
+            title = title,
             onBack = onBack,
         )
         LazyColumn(
@@ -97,62 +103,73 @@ fun ThreadScreen(
                 )
             }
         }
-        Row(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 12.dp, vertical = 10.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(10.dp),
-        ) {
-            BasicTextField(
-                value = draft,
-                onValueChange = { draft = it },
-                textStyle =
-                    MaterialTheme.typography.bodyLarge.copy(
-                        color = MaterialTheme.colorScheme.onSurface,
-                    ),
-                cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+        if (!acceptsReplies && address.isNotBlank()) {
+            MyOsCard(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)) {
+                Text(
+                    text = context.getString(R.string.sender_no_reply),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(vertical = 14.dp),
+                )
+            }
+        } else {
+            Row(
                 modifier =
                     Modifier
-                        .weight(1f)
-                        .clip(RoundedCornerShape(28.dp))
-                        .background(MaterialTheme.colorScheme.surface)
-                        .padding(horizontal = 18.dp, vertical = 14.dp),
-                decorationBox = { inner ->
-                    if (draft.isEmpty()) {
-                        Text(
-                            text = "Mesaj",
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    }
-                    inner()
-                },
-            )
-            FloatingActionButton(
-                onClick = {
-                    val body = draft.trim()
-                    if (body.isEmpty()) return@FloatingActionButton
-                    onSend(body)
-                    draft = ""
-                },
-                shape = CircleShape,
-                containerColor =
-                    if (canSend) {
-                        MaterialTheme.colorScheme.primary
-                    } else {
-                        MaterialTheme.colorScheme.surfaceVariant
-                    },
-                contentColor =
-                    if (canSend) {
-                        MaterialTheme.colorScheme.onPrimary
-                    } else {
-                        MaterialTheme.colorScheme.onSurfaceVariant
-                    },
-                modifier = Modifier.size(52.dp),
+                        .fillMaxWidth()
+                        .padding(horizontal = 12.dp, vertical = 10.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(10.dp),
             ) {
-                Icon(Icons.AutoMirrored.Filled.Send, contentDescription = "Gönder")
+                BasicTextField(
+                    value = draft,
+                    onValueChange = { draft = it },
+                    textStyle =
+                        MaterialTheme.typography.bodyLarge.copy(
+                            color = MaterialTheme.colorScheme.onSurface,
+                        ),
+                    cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+                    modifier =
+                        Modifier
+                            .weight(1f)
+                            .clip(RoundedCornerShape(28.dp))
+                            .background(MaterialTheme.colorScheme.surface)
+                            .padding(horizontal = 18.dp, vertical = 14.dp),
+                    decorationBox = { inner ->
+                        if (draft.isEmpty()) {
+                            Text(
+                                text = "Mesaj",
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                        inner()
+                    },
+                )
+                FloatingActionButton(
+                    onClick = {
+                        val body = draft.trim()
+                        if (body.isEmpty()) return@FloatingActionButton
+                        onSend(body)
+                        draft = ""
+                    },
+                    shape = CircleShape,
+                    containerColor =
+                        if (canSend) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.surfaceVariant
+                        },
+                    contentColor =
+                        if (canSend) {
+                            MaterialTheme.colorScheme.onPrimary
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        },
+                    modifier = Modifier.size(52.dp),
+                ) {
+                    Icon(Icons.AutoMirrored.Filled.Send, contentDescription = "Gönder")
+                }
             }
         }
     }

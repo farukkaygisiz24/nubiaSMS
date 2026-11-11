@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Mesajlar</string>
+    <string name="sender_no_reply">Gönderen, yanıt kabul etmiyor. Gönderenle doğrudan iletişim kurun.</string>
+</resources>
