@@ -21,3 +21,11 @@ captures/
 # Worktrees
 .worktrees/
 worktrees/
+
+# Large MyOS APK dumps (keep curated tokens only)
+design-refs/myos-settings/*.apk
+design-refs/myos-settings/settings_decoded/
+design-refs/myos-settings/zte_framework_decoded/
+design-refs/myos-settings/extracted/
+design-refs/myos-settings/tokens_raw.txt
+

@@ -132,9 +132,9 @@ fun ThreadScreen(
                     modifier =
                         Modifier
                             .weight(1f)
-                            .clip(RoundedCornerShape(28.dp))
-                            .background(MaterialTheme.colorScheme.surface)
-                            .padding(horizontal = 18.dp, vertical = 14.dp),
+                        .clip(RoundedCornerShape(com.aramalr.messages.ui.theme.MyOsCorner))
+                        .background(MaterialTheme.colorScheme.surface)
+                        .padding(horizontal = 16.dp, vertical = 14.dp),
                     decorationBox = { inner ->
                         if (draft.isEmpty()) {
                             Text(

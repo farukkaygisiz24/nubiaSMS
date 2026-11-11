@@ -41,10 +41,10 @@ fun MyOsSearchField(
                 modifier =
                     Modifier
                         .fillMaxWidth()
-                        .height(48.dp)
-                        .clip(MyOsSearchShape)
+                        .height(48.dp) // abc_search_view_preferred_height
+                        .clip(MyOsSearchShape) // mfvc_radius 16dp
                         .background(container)
-                        .padding(horizontal = 16.dp),
+                        .padding(horizontal = 16.dp), // mfvc_large_padding
             ) {
                 Icon(
                     imageVector = Icons.Filled.Search,

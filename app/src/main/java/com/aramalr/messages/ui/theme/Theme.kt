@@ -11,9 +11,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
-/** MyOS Settings-like card surface (not wallpaper-tinted). */
-val MyOsCardSurface = Color(0xFF1A1A1A)
+/** MyOS Settings night card (`mfv_common_card_bg_color`). */
+val MyOsCardSurface = Color(0xFF1B1B1B)
 val MyOsCardSurfaceLight = Color(0xFFFFFFFF)
+/** MyOS search night (`mfvc_common_search_bg`). */
+val MyOsSearchSurface = Color(0xFF2D2D2D)
+val MyOsSearchSurfaceLight = Color(0xFFEBEBEB)
 val MyOsSecondaryText = Color(0xFFD0D0D0)
 val MyOsAccentReadable = Color(0xFFB4C0FF)
 val MyOsSecondaryTextLight = Color(0xFF5C5C5C)
@@ -22,7 +25,7 @@ private val FallbackDark =
     darkColorScheme(
         background = Color.Black,
         surface = MyOsCardSurface,
-        surfaceVariant = Color(0xFF2A2A2A),
+        surfaceVariant = MyOsSearchSurface,
         onBackground = Color.White,
         onSurface = Color.White,
         onSurfaceVariant = MyOsSecondaryText,
@@ -36,7 +39,7 @@ private val FallbackLight =
     lightColorScheme(
         background = Color(0xFFF2F2F2),
         surface = MyOsCardSurfaceLight,
-        surfaceVariant = Color(0xFFE8E8E8),
+        surfaceVariant = MyOsSearchSurfaceLight,
         onBackground = Color(0xFF111111),
         onSurface = Color(0xFF111111),
         onSurfaceVariant = MyOsSecondaryTextLight,
@@ -53,7 +56,7 @@ fun AramalrTheme(content: @Composable () -> Unit) {
                 dynamic.copy(
                     background = Color.Black,
                     surface = MyOsCardSurface,
-                    surfaceVariant = Color(0xFF2A2A2A),
+                    surfaceVariant = MyOsSearchSurface,
                     onBackground = Color.White,
                     onSurface = Color.White,
                     onSurfaceVariant = MyOsSecondaryText,
@@ -71,7 +74,7 @@ fun AramalrTheme(content: @Composable () -> Unit) {
                 dynamic.copy(
                     background = Color(0xFFF2F2F2),
                     surface = MyOsCardSurfaceLight,
-                    surfaceVariant = Color(0xFFE8E8E8),
+                    surfaceVariant = MyOsSearchSurfaceLight,
                     onBackground = Color(0xFF111111),
                     onSurface = Color(0xFF111111),
                     onSurfaceVariant = MyOsSecondaryTextLight,

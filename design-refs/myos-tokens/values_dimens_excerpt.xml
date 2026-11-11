@@ -1,0 +1,23 @@
+<resources>
+<dimen name="mfvc_radius">16.0dip</dimen>
+<dimen name="mfvc_radius_card">16.0dip</dimen>
+<dimen name="mfvc_radius_dialog">24.0dip</dimen>
+<dimen name="mfvc_card_bg_radius">16.0dip</dimen>
+<dimen name="mfvc_card_item_radius">12.0dip</dimen>
+<dimen name="mfvc_search_history_item_bg_corner">14.0dip</dimen>
+<dimen name="mfvc_large_padding">16.0dip</dimen>
+<dimen name="mfvc_medium_padding">8.0dip</dimen>
+<dimen name="mfvc_small_padding">4.0dip</dimen>
+<dimen name="mfvc_xlarge_padding">24.0dip</dimen>
+<dimen name="mfvc_1line_list_height">52.0dip</dimen>
+<dimen name="mfvc_2line_list_height">68.0dip</dimen>
+<dimen name="homepage_preference_corner_radius">28.0dip</dimen>
+<dimen name="homepage_title_margin_horizontal">24.0dip</dimen>
+<dimen name="homepage_app_bar_corner_radius">32.0dip</dimen>
+<dimen name="abc_search_view_preferred_height">48.0dip</dimen>
+<dimen name="list_preferred_item_padding">16.0dip</dimen>
+<dimen name="mfvc_card_item_bg_padding_left">16.0dip</dimen>
+<dimen name="mfvc_card_item_bg_padding_right">16.0dip</dimen>
+<dimen name="mfv_common_card_pressed_bg_corner">14.0dip</dimen>
+<dimen name="mfv_personal_settings_card_radius">16.0dip</dimen>
+</resources>

@@ -1,0 +1,10 @@
+<resources>
+<color name="mfv_common_card_bg_color">#ffffffff</color>
+<color name="mfv_common_card_bg_color_pressed">#0f000000</color>
+<color name="mfvc_common_search_bg">#ffebebeb</color>
+<color name="mfvc_common_search_bg_normal">#ffebebeb</color>
+<color name="mfv_common_acb_search_bg">@color/mfvc_search_bg_color</color>
+<color name="mfvc_card_bg_color">#fff5f5f5</color>
+<color name="mfvc_search_bg_color">#ffebebeb</color>
+<color name="mfvc_search_bg_color_dark">@color/mfvc_search_bg_color</color>
+</resources>
