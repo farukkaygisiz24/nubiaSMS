@@ -14,7 +14,8 @@ import androidx.compose.ui.platform.LocalContext
 /** MyOS Settings-like card surface (not wallpaper-tinted). */
 val MyOsCardSurface = Color(0xFF1A1A1A)
 val MyOsCardSurfaceLight = Color(0xFFFFFFFF)
-val MyOsSecondaryText = Color(0xFFB3B3B3)
+val MyOsSecondaryText = Color(0xFFD0D0D0)
+val MyOsAccentReadable = Color(0xFFB4C0FF)
 val MyOsSecondaryTextLight = Color(0xFF5C5C5C)
 
 private val FallbackDark =
@@ -56,13 +57,13 @@ fun AramalrTheme(content: @Composable () -> Unit) {
                     onBackground = Color.White,
                     onSurface = Color.White,
                     onSurfaceVariant = MyOsSecondaryText,
+                    primary = MyOsAccentReadable,
                     onPrimary = Color.Black,
                     onPrimaryContainer = Color.White,
                     onSecondary = Color.Black,
                     onSecondaryContainer = Color.White,
                     onTertiary = Color.Black,
                     onTertiaryContainer = Color.White,
-                    // Keep dynamic primary/secondary accents from wallpaper/theme.
                 )
             }
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !dark -> {
