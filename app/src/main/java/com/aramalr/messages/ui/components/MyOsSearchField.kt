@@ -27,7 +27,7 @@ fun MyOsSearchField(
     placeholder: String,
     modifier: Modifier = Modifier,
 ) {
-    val container = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.55f)
+    val container = MaterialTheme.colorScheme.surfaceVariant
     BasicTextField(
         value = value,
         onValueChange = onValueChange,

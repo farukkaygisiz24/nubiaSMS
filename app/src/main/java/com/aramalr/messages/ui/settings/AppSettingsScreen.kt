@@ -3,7 +3,6 @@ package com.aramalr.messages.ui.settings
 import android.app.Activity
 import android.content.Intent
 import android.provider.Settings
-import android.view.autofill.AutofillManager
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -15,10 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,6 +31,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.aramalr.messages.evidence.OtpEvidenceEvent
 import com.aramalr.messages.evidence.OtpEvidenceLog
 import com.aramalr.messages.sms.SmsRoleHelper
+import com.aramalr.messages.ui.components.AramalrTopBar
 import com.aramalr.messages.ui.components.MyOsCard
 import java.io.File
 
@@ -71,20 +67,14 @@ fun AppSettingsScreen(
                 .padding(horizontal = 16.dp)
                 .verticalScroll(rememberScrollState()),
     ) {
-        IconButton(onClick = onBack) {
-            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Geri")
-        }
-        Text(
-            text = "Ayarlar",
-            style = MaterialTheme.typography.headlineLarge,
-            color = MaterialTheme.colorScheme.onBackground,
-        )
+        AramalrTopBar(title = "Ayarlar", onBack = onBack)
         Spacer(Modifier.height(16.dp))
         MyOsCard {
             Column(Modifier.padding(vertical = 12.dp)) {
                 Text(
                     text = "Varsayılan SMS uygulaması",
                     style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurface,
                     modifier =
                         Modifier
                             .fillMaxWidth()
@@ -109,21 +99,17 @@ fun AppSettingsScreen(
                 Text(
                     text = "Otomatik doldurma (Autofill)",
                     style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurface,
                     modifier =
                         Modifier
                             .fillMaxWidth()
                             .clickable {
-                                val am = context.getSystemService(AutofillManager::class.java)
-                                if (am != null && !am.hasEnabledAutofillServices()) {
-                                    context.startActivity(Intent(Settings.ACTION_REQUEST_SET_AUTOFILL_SERVICE))
-                                } else {
-                                    context.startActivity(Intent(Settings.ACTION_REQUEST_SET_AUTOFILL_SERVICE))
-                                }
+                                context.startActivity(Intent(Settings.ACTION_REQUEST_SET_AUTOFILL_SERVICE))
                             }
                             .padding(vertical = 8.dp),
                 )
                 Text(
-                    text = "Sistem ayarlarından aramalr’ı Autofill servisi yap",
+                    text = "Sistem ayarlarından aramalr'ı Autofill servisi yap",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -135,6 +121,7 @@ fun AppSettingsScreen(
                 Text(
                     text = "OTP kanıt günlüğü",
                     style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
                 Text(
                     text = "Temizle",
@@ -172,6 +159,7 @@ private fun EvidenceRow(event: OtpEvidenceEvent) {
         Text(
             text = "${event.sender} · ${event.assistPath}",
             style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.onSurface,
         )
         Text(
             text =

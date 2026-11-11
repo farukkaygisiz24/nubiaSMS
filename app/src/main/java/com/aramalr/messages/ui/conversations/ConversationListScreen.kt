@@ -76,7 +76,11 @@ fun ConversationListScreen(
                     modifier = Modifier.weight(1f),
                 )
                 IconButton(onClick = onSettings) {
-                    Icon(Icons.Filled.Settings, contentDescription = "Ayarlar")
+                    Icon(
+                        imageVector = Icons.Filled.Settings,
+                        contentDescription = "Ayarlar",
+                        tint = MaterialTheme.colorScheme.onBackground,
+                    )
                 }
             }
             Spacer(Modifier.height(16.dp))
@@ -139,6 +143,7 @@ private fun ConversationRow(
                 Text(
                     text = conversation.displayName ?: conversation.address,
                     style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurface,
                     fontWeight = if (conversation.unreadCount > 0) FontWeight.Bold else FontWeight.Normal,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
