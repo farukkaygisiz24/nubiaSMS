@@ -1,14 +1,20 @@
 package com.aramalr.messages.ui.settings
 
 import android.app.Activity
+import android.content.Intent
+import android.provider.Settings
+import android.view.autofill.AutofillManager
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Icon
@@ -27,8 +33,11 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import com.aramalr.messages.evidence.OtpEvidenceEvent
+import com.aramalr.messages.evidence.OtpEvidenceLog
 import com.aramalr.messages.sms.SmsRoleHelper
 import com.aramalr.messages.ui.components.MyOsCard
+import java.io.File
 
 @Composable
 fun AppSettingsScreen(
@@ -36,7 +45,9 @@ fun AppSettingsScreen(
 ) {
     val context = LocalContext.current
     val activity = context as Activity
+    val evidenceLog = remember { OtpEvidenceLog(File(context.filesDir, "evidence")) }
     var isDefault by remember { mutableStateOf(SmsRoleHelper.isDefaultSms(context)) }
+    var events by remember { mutableStateOf(evidenceLog.readAll().asReversed()) }
     val lifecycleOwner = LocalLifecycleOwner.current
 
     DisposableEffect(lifecycleOwner) {
@@ -44,6 +55,7 @@ fun AppSettingsScreen(
             LifecycleEventObserver { _, event ->
                 if (event == Lifecycle.Event.ON_RESUME) {
                     isDefault = SmsRoleHelper.isDefaultSms(context)
+                    events = evidenceLog.readAll().asReversed()
                 }
             }
         lifecycleOwner.lifecycle.addObserver(observer)
@@ -56,7 +68,8 @@ fun AppSettingsScreen(
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
                 .statusBarsPadding()
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = 16.dp)
+                .verticalScroll(rememberScrollState()),
     ) {
         IconButton(onClick = onBack) {
             Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Geri")
@@ -74,6 +87,7 @@ fun AppSettingsScreen(
                     style = MaterialTheme.typography.bodyLarge,
                     modifier =
                         Modifier
+                            .fillMaxWidth()
                             .clickable { SmsRoleHelper.requestDefaultSms(activity) }
                             .padding(vertical = 8.dp),
                 )
@@ -89,5 +103,85 @@ fun AppSettingsScreen(
                 )
             }
         }
+        Spacer(Modifier.height(12.dp))
+        MyOsCard {
+            Column(Modifier.padding(vertical = 12.dp)) {
+                Text(
+                    text = "Otomatik doldurma (Autofill)",
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                val am = context.getSystemService(AutofillManager::class.java)
+                                if (am != null && !am.hasEnabledAutofillServices()) {
+                                    context.startActivity(Intent(Settings.ACTION_REQUEST_SET_AUTOFILL_SERVICE))
+                                } else {
+                                    context.startActivity(Intent(Settings.ACTION_REQUEST_SET_AUTOFILL_SERVICE))
+                                }
+                            }
+                            .padding(vertical = 8.dp),
+                )
+                Text(
+                    text = "Sistem ayarlarından aramalr’ı Autofill servisi yap",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+        Spacer(Modifier.height(12.dp))
+        MyOsCard {
+            Column(Modifier.padding(vertical = 12.dp)) {
+                Text(
+                    text = "OTP kanıt günlüğü",
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+                Text(
+                    text = "Temizle",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier =
+                        Modifier
+                            .clickable {
+                                evidenceLog.clear()
+                                events = emptyList()
+                            }
+                            .padding(vertical = 8.dp),
+                )
+                if (events.isEmpty()) {
+                    Text(
+                        text = "Henüz kayıt yok",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                } else {
+                    events.take(40).forEach { event ->
+                        EvidenceRow(event)
+                        Spacer(Modifier.height(8.dp))
+                    }
+                }
+            }
+        }
+        Spacer(Modifier.height(24.dp))
+    }
+}
+
+@Composable
+private fun EvidenceRow(event: OtpEvidenceEvent) {
+    Column {
+        Text(
+            text = "${event.sender} · ${event.assistPath}",
+            style = MaterialTheme.typography.labelLarge,
+        )
+        Text(
+            text =
+                if (event.detectedCode != null) {
+                    "kod: ${event.detectedCode}"
+                } else {
+                    "kod yok"
+                },
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
     }
 }

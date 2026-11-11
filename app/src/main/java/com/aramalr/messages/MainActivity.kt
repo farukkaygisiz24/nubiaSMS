@@ -26,6 +26,7 @@ class MainActivity : ComponentActivity() {
                 Manifest.permission.RECEIVE_SMS,
                 Manifest.permission.SEND_SMS,
                 Manifest.permission.READ_CONTACTS,
+                Manifest.permission.POST_NOTIFICATIONS,
             ),
         )
         setContent {
