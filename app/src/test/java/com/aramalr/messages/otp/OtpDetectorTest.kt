@@ -26,4 +26,13 @@ class OtpDetectorTest {
     fun returnsNullForTrackingCodePhrase() {
         assertNull(OtpDetector.detect("Kargonuz yola cikti. Takip kodunuz 12345678."))
     }
+
+    @Test
+    fun returnsNullForCouponCodePhrase() {
+        assertNull(
+            OtpDetector.detect(
+                "Size ozel kupon kodu: KSM8612385 https://example.com",
+            ),
+        )
+    }
 }

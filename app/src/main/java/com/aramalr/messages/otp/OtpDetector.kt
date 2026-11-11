@@ -34,6 +34,8 @@ object OtpDetector {
             "tracking",
             "iade",
             "fatura no",
+            "kupon",
+            "indirim kod",
         )
 
     private val codeRegex = Regex("""(?<![0-9.,])(\d{4,8})(?![0-9])""")
