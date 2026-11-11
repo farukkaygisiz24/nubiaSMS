@@ -46,4 +46,23 @@ class OtpEvidenceLogTest {
         log.clear()
         assertTrue(log.readAll().isEmpty())
     }
+
+    @Test
+    fun updateLatestPendingChangesAssistPath() {
+        val log = OtpEvidenceLog(tmp.newFolder("evidence3"))
+        log.append(
+            OtpEvidenceEvent(
+                timestampMillis = 1L,
+                sender = "BANK",
+                body = "kod 111111",
+                detectedCode = "111111",
+                confidence = 0.8f,
+                assistPath = "pending",
+            ),
+        )
+        val updated = log.updateLatestPending(code = "111111", assistPath = "offered")
+        assertTrue(updated)
+        assertEquals("offered", log.readAll().single().assistPath)
+        assertEquals("111111", log.readAll().single().detectedCode)
+    }
 }

@@ -12,7 +12,6 @@ import android.service.autofill.SaveRequest
 import android.view.autofill.AutofillId
 import android.view.autofill.AutofillValue
 import android.widget.RemoteViews
-import com.aramalr.messages.evidence.OtpEvidenceEvent
 import com.aramalr.messages.evidence.OtpEvidenceLog
 import com.aramalr.messages.otp.LatestOtpStore
 import java.io.File
@@ -31,18 +30,18 @@ class AramalrOtpAutofillService : AutofillService() {
         val (match, _) = latest
         val structure = request.fillContexts.lastOrNull()?.structure
         if (structure == null) {
-            logAssist("none")
+            evidenceLog().updateLatestPending(match.code, "none")
             callback.onSuccess(null)
             return
         }
 
         val ids = mutableListOf<AutofillId>()
-        walk(structure.windowNodeCount) { i ->
+        for (i in 0 until structure.windowNodeCount) {
             walkNode(structure.getWindowNodeAt(i).rootViewNode, ids)
         }
 
         if (ids.isEmpty()) {
-            logAssist("none")
+            evidenceLog().updateLatestPending(match.code, "none")
             callback.onSuccess(null)
             return
         }
@@ -53,13 +52,15 @@ class AramalrOtpAutofillService : AutofillService() {
             }
         val datasetBuilder = Dataset.Builder()
         ids.forEach { id ->
+            @Suppress("DEPRECATION")
             datasetBuilder.setValue(id, AutofillValue.forText(match.code), presentation)
         }
         val response =
             FillResponse.Builder()
                 .addDataset(datasetBuilder.build())
                 .build()
-        logAssist("autofill")
+        // Honest trail: dataset offered to the user (selection not separately observable here).
+        evidenceLog().updateLatestPending(match.code, "offered")
         callback.onSuccess(response)
     }
 
@@ -70,12 +71,7 @@ class AramalrOtpAutofillService : AutofillService() {
         callback.onSuccess()
     }
 
-    private fun walk(
-        count: Int,
-        block: (Int) -> Unit,
-    ) {
-        for (i in 0 until count) block(i)
-    }
+    private fun evidenceLog(): OtpEvidenceLog = OtpEvidenceLog(File(filesDir, "evidence"))
 
     private fun walkNode(
         node: AssistStructure.ViewNode,
@@ -100,20 +96,5 @@ class AramalrOtpAutofillService : AutofillService() {
         val idEntry = (node.idEntry ?: "").lowercase()
         val blob = "$hint $text $idEntry"
         return listOf("otp", "kod", "code", "doğrulama", "dogrulama", "sms", "pin").any { blob.contains(it) }
-    }
-
-    private fun logAssist(path: String) {
-        val latest = LatestOtpStore.latest()
-        OtpEvidenceLog(File(filesDir, "evidence")).append(
-            OtpEvidenceEvent(
-                timestampMillis = System.currentTimeMillis(),
-                sender = "autofill",
-                body = "",
-                detectedCode = latest?.first?.code,
-                confidence = latest?.first?.confidence,
-                assistPath = path,
-                notes = "autofill_fill_request",
-            ),
-        )
     }
 }

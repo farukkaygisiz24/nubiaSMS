@@ -25,6 +25,22 @@ class OtpEvidenceLog(private val dir: File) {
         }
     }
 
+    fun updateLatestPending(
+        code: String?,
+        assistPath: String,
+    ): Boolean {
+        val events = readAll().toMutableList()
+        val index =
+            events.indexOfLast {
+                it.assistPath == "pending" && (code == null || it.detectedCode == code)
+            }
+        if (index < 0) return false
+        events[index] = events[index].copy(assistPath = assistPath)
+        dir.mkdirs()
+        file.writeText(events.joinToString(separator = "\n") { toJsonLine(it) } + if (events.isEmpty()) "" else "\n")
+        return true
+    }
+
     private fun toJsonLine(event: OtpEvidenceEvent): String {
         val o = JSONObject()
         o.put("timestampMillis", event.timestampMillis)

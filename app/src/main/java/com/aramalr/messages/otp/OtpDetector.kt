@@ -3,15 +3,37 @@ package com.aramalr.messages.otp
 object OtpDetector {
     private val keywords =
         listOf(
+            "doğrulama kodu",
+            "dogrulama kodu",
+            "verification code",
+            "one-time",
+            "onetime",
+            "tek kullanımlık",
+            "tek kullanimlik",
             "doğrulama",
             "dogrulama",
             "verification",
-            "kodunuz",
+            "otp",
+            "şifreniz",
+            "sifreniz",
             "şifre",
             "sifre",
-            "otp",
+            "kodunuz",
             "code",
             "kod",
+        )
+
+    private val rejectContext =
+        listOf(
+            "takip",
+            "kargo",
+            "sipariş",
+            "siparis",
+            "referans",
+            "reference",
+            "tracking",
+            "iade",
+            "fatura no",
         )
 
     private val codeRegex = Regex("""(?<![0-9.,])(\d{4,8})(?![0-9])""")
@@ -19,6 +41,8 @@ object OtpDetector {
     fun detect(body: String): OtpMatch? {
         if (body.isBlank()) return null
         val normalized = body.lowercase()
+        if (rejectContext.any { normalized.contains(it) }) return null
+
         val keywordHits =
             keywords.mapNotNull { kw ->
                 val idx = normalized.indexOf(kw)

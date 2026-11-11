@@ -21,4 +21,9 @@ class OtpDetectorTest {
     fun returnsNullWhenNoCode() {
         assertNull(OtpDetector.detect("Yarin saat 15:00 randevun var."))
     }
+
+    @Test
+    fun returnsNullForTrackingCodePhrase() {
+        assertNull(OtpDetector.detect("Kargonuz yola cikti. Takip kodunuz 12345678."))
+    }
 }
