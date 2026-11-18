@@ -8,20 +8,30 @@
     <uses-permission android:name="android.permission.RECEIVE_MMS" />
     <uses-permission android:name="android.permission.RECEIVE_WAP_PUSH" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+
+    <!-- Android 11+ package visibility: lets Ayarlar show the autofill service's name
+         (e.g. "Proton Pass") instead of its package id. Read-only. -->
+    <queries>
+        <intent>
+            <action android:name="android.service.autofill.AutofillService" />
+        </intent>
+    </queries>
 
     <application
-        android:name=".AramalrApp"
+        android:name=".NubiaSmsApp"
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Aramalr">
+        android:theme="@style/Theme.NubiaSms">
 
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.Aramalr.Splash"
+            android:theme="@style/Theme.NubiaSms.Splash"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -48,6 +58,21 @@
             </intent-filter>
         </receiver>
 
+        <!-- "Yanıtla" / "Okundu" buttons on SMS notifications. Not exported. -->
+        <receiver
+            android:name=".notify.NotificationActionReceiver"
+            android:exported="false" />
+
+        <!-- "Kodu kopyala" button on OTP notifications. Not exported. -->
+        <receiver
+            android:name=".notify.CopyCodeReceiver"
+            android:exported="false" />
+
+        <!-- Developer "Test SMS" (Ayarlar → Geliştirici). Not exported: only our own alarm fires it. -->
+        <receiver
+            android:name=".debug.TestSmsReceiver"
+            android:exported="false" />
+
         <receiver
             android:name=".sms.MmsReceiver"
             android:exported="true"
@@ -73,7 +98,7 @@
         </service>
 
         <service
-            android:name=".autofill.AramalrOtpAutofillService"
+            android:name=".autofill.NubiaSmsOtpAutofillService"
             android:exported="true"
             android:permission="android.permission.BIND_AUTOFILL_SERVICE">
             <intent-filter>
@@ -83,5 +108,15 @@
                 android:name="android.autofill"
                 android:resource="@xml/autofill_service" />
         </service>
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
     </application>
 </manifest>
