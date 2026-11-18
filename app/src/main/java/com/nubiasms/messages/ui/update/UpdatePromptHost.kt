@@ -79,8 +79,12 @@ fun UpdatePromptHost(manualCheckTick: Int = 0) {
         onPauseOrDispose { }
     }
 
-    LaunchedEffect(resumeEpoch, manualCheckTick) {
-        refresh(forceShowSoft = manualCheckTick > 0)
+    // Resume: respect soft-dismiss. Manual Settings check: force Soft to show once.
+    LaunchedEffect(resumeEpoch) {
+        refresh(forceShowSoft = false)
+    }
+    LaunchedEffect(manualCheckTick) {
+        if (manualCheckTick > 0) refresh(forceShowSoft = true)
     }
 
     if (promptKind == UpdatePromptKind.None && error == null) return
