@@ -33,13 +33,37 @@ android {
         buildConfigField("String", "UPDATE_APK_ASSET", "\"${localOr("update.apk.asset", "nubiasms-release.apk")}\"")
     }
 
+    val keystorePropsFile = rootProject.file("keystore.properties")
+    val keystoreProps =
+        mutableMapOf<String, String>().also { map ->
+            if (keystorePropsFile.exists()) {
+                keystorePropsFile.readLines().forEach { line ->
+                    val t = line.trim()
+                    if (t.isEmpty() || t.startsWith("#")) return@forEach
+                    val i = t.indexOf('=')
+                    if (i > 0) map[t.substring(0, i).trim()] = t.substring(i + 1).trim()
+                }
+            }
+        }
+    fun secret(name: String) = System.getenv(name) ?: keystoreProps[name]
+    val releaseStoreFile = secret("KEYSTORE_FILE")?.let { rootProject.file(it) }
+    if (releaseStoreFile != null && releaseStoreFile.exists()) {
+        signingConfigs.create("release") {
+            storeFile = releaseStoreFile
+            storePassword = secret("KEYSTORE_PASSWORD")
+            keyAlias = secret("KEY_ALIAS")
+            keyPassword = secret("KEY_PASSWORD")
+        }
+    }
+
     buildTypes {
         release {
             // R8 + resource shrinking: Compose runs several times faster than in debug.
             isMinifyEnabled = true
             isShrinkResources = true
-            // Personal sideload build: sign with the debug key so it installs over debug.
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig =
+                signingConfigs.findByName("release")
+                    ?: signingConfigs.getByName("debug")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",

@@ -14,6 +14,9 @@ captures/
 *.aab
 *.dex
 *.class
+*.jks
+*.keystore
+keystore.properties
 
 # Superpowers SDD scratch
 .superpowers/
@@ -28,4 +31,7 @@ design-refs/myos-settings/settings_decoded/
 design-refs/myos-settings/zte_framework_decoded/
 design-refs/myos-settings/extracted/
 design-refs/myos-settings/tokens_raw.txt
+design-refs/myos-apks/
+design-refs/myos-decoded/
+design-refs/apktool-framework/
 
